@@ -3,8 +3,10 @@ services:
 
   mongo:
     image: 'mongo'
-    expose:
-      - '27017'
+#    expose:
+#      - '27017'
+    ports:
+      - '27017:27017'
     volumes:
       - mongo_data:/data/db
     env_file:
@@ -17,8 +19,10 @@ services:
     restart: always
     env_file:
       - ./backend/.env
-    expose:
-      - 3000
+#    expose:
+#      - 3000
+    ports:
+      - '3000:3000'
     depends_on:
       - mongo
 
