@@ -1,8 +1,12 @@
 # react-mesto-api-full
 Проект `Mesto`, включающий фронтенд и бэкенд части приложения со 
 следующими возможностями: авторизации и регистрации пользователей, операции с карточками и пользователями.
-  
 
-https://mesto.haydev.online
-https://api.mesto.haydev.online
-84.201.162.179
+Демо:
+https://mesto.haydev.ru
+
+API:
+https://api.mesto.haydev.ru
+
+Server IP:
+51.250.103.48
