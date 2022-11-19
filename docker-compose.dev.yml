@@ -38,6 +38,13 @@ services:
     depends_on:
       - backend
 
+  certbot:
+    container_name: certbot
+    image: certbot/certbot
+    volumes:
+      - ./certificates/letsencrypt:/etc/letsencrypt/:rw
+      - ./certificates/certbot:/var/www/certbot/:rw
+    command: certonly -v --webroot -w /var/www/certbot --force-renewal --email hsh0@ya.ru -d api.mesto.haydev.ru --agree-tos
 
 volumes:
   mongo_data:

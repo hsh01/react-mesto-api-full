@@ -31,8 +31,12 @@ services:
       - ./frontend/.env
     ports:
       - '80:80'
+      - '443:443'
     depends_on:
       - backend
+    volumes:
+      - ./certificates/letsencrypt:/etc/letsencrypt
+      - ./certificates/certbot:/var/www/certbot
 
 
 volumes:
