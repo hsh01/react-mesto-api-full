@@ -1,0 +1,1 @@
+export const {REACT_APP_API_BASE_PATH = 'http://localhost:3000'} = process.env;
