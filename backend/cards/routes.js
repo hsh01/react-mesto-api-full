@@ -3,8 +3,8 @@ const { celebrate } = require('celebrate');
 
 const {
   createCard, deleteCard, getCards, likeCard, dislikeCard,
-} = require('../controllers/cards');
-const { CardInSchema, CardIdParamSchema } = require('../schemas/card');
+} = require('./services');
+const { CardInSchema, CardIdParamSchema } = require('./schemas');
 
 router.get('/', getCards);
 router.delete('/:cardId', celebrate(CardIdParamSchema), deleteCard);

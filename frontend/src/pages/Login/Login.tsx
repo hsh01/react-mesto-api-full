@@ -8,11 +8,12 @@ import {Router} from '../../router';
 import {InfoTooltip} from '../../components/InfoTooltip';
 import {useFormAndValidation} from '../../hooks/useFormAndValidation';
 import {useAuth} from "../../contexts/AuthContext";
+import {ApiError} from "../../models/ApiError";
 
 const Login: FunctionComponent = () => {
     const [errorMessage, setErrorMessage] = useState<string>('');
     const [showErrorPopup, setShowErrorPopup] = useState(false);
-    const {values, handleChange, errors, isValid, resetForm} = useFormAndValidation();
+    const {values, handleChange, errors, setErrors, isValid, resetForm} = useFormAndValidation();
 
     const {login} = useAuth();
 
@@ -33,9 +34,10 @@ const Login: FunctionComponent = () => {
         }
         return login({email: values.email, password: values.password})
             .then(() => navigate(Router.HOME))
-            .catch((err: any) => {
-                setErrorMessage(err.toString());
+            .catch((err: ApiError) => {
+                setErrorMessage(err.body.message ?? err.toString());
                 setShowErrorPopup(true);
+                return Promise.reject(err);
             });
     };
 
@@ -52,7 +54,7 @@ const Login: FunctionComponent = () => {
                     </Link>
                 }
             />
-            <SignForm name='login' title='Вход' onSubmit={handleSubmit} buttonDisabled={!isValid}>
+            <SignForm name='login' title='Вход' onSubmit={handleSubmit} buttonDisabled={!isValid} setErrors={setErrors}>
                 <fieldset className='form__set'>
                     <Input
                         title='Email'

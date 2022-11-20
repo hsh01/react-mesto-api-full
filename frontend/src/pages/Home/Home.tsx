@@ -74,34 +74,22 @@ function Home() {
     }
 
     const handleAddPlaceSubmit = (card: CardModel) => {
-        return api.postCard(card).then(
-            (card) => setCards([card, ...cards]),
-            (err) => {
-                console.log(err);
-            }
-        );
+        return api.postCard(card)
+            .then((card) => setCards([card, ...cards]));
     };
 
     const handleUpdateUser = (user: { name: string | undefined; about: string | undefined }) => {
-        return api.patchUserInfo(user).then(
-            (user) => setUser(user),
-            (err) => {
-                console.log(err);
-            }
-        );
+        return api.patchUserInfo(user)
+            .then((user) => setUser(user));
     };
 
     const handleUpdateAvatar = (user: { avatar: string }) => {
-        return api.patchUserAvatar(user).then(
-            (user) => setUser(user),
-            (err) => {
-                console.log(err);
-            }
-        );
+        return api.patchUserAvatar(user).then((user) => setUser(user));
     };
 
     useEffect(() => {
-        api.getCards().then(setCards);
+        api.getCards()
+            .then(setCards);
     }, []);
 
     return (

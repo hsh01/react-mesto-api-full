@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import {ApiError} from "../../models/ApiError";
 
 type Props = {
     title: string;
@@ -11,6 +12,7 @@ type Props = {
     submitting?: boolean;
     submitted?: boolean;
     submitError?: string;
+    setErrors: (data: any) => void;
 };
 
 export const SignForm = ({
@@ -20,6 +22,7 @@ export const SignForm = ({
     onSubmit,
     buttonDisabled = true,
     isOpen = false,
+    setErrors,
     buttonLabel = 'Войти'
 }: Props) => {
     const [loading, setLoading] = useState(false);
@@ -32,8 +35,14 @@ export const SignForm = ({
         e.preventDefault();
         setLoading(true);
         onSubmit(e)
-            .catch((error: any) => {
-                console.log('error', error);
+            .catch((err: ApiError) => {
+                if (err.body.validation) {
+                    setErrors({
+                        ...err.body.validation.body.keys.reduce((accum: Object, key: string) => ({
+                            [key]: err.body.validation.body.message
+                        }), {})
+                    })
+                }
             })
             .finally(() => setLoading(false));
     }

@@ -1,30 +1,31 @@
 import * as React from 'react';
-import {useEffect, useState} from 'react';
+import {useEffect} from 'react';
 import {PopupWithForm} from '../PopupWithForm';
+import {useFormAndValidation} from "../../hooks/useFormAndValidation";
+import {Input} from "../Input";
+import {useAuth} from "../../contexts/AuthContext";
 
 type Props = {
     isOpen: boolean;
     onClose: () => void;
-    onUpdateAvatar: (user: {avatar: string}) => void;
+    onUpdateAvatar: (user: { avatar: string }) => void;
 };
 
 export const EditAvatarPopup = ({isOpen, onClose, onUpdateAvatar}: Props) => {
-    const inputRef = React.useRef<any>(null);
 
-    const [fixed, setFixed] = useState(false);
-    const [error, setError] = useState('');
+    const {user} = useAuth();
+    const {values, handleChange, errors, setErrors, isValid, resetForm} = useFormAndValidation();
 
     function handleSubmit() {
-        return onUpdateAvatar({
-            avatar: inputRef.current.value
-        });
+        return onUpdateAvatar(values);
     }
 
     useEffect(() => {
-        inputRef.current.value = '';
-        setFixed(false);
-        setError('');
-    }, [isOpen]);
+        if (user) {
+            const {avatar} = user;
+            resetForm({avatar});
+        }
+    }, [user, isOpen, resetForm]);
 
     return (
         <PopupWithForm
@@ -32,29 +33,20 @@ export const EditAvatarPopup = ({isOpen, onClose, onUpdateAvatar}: Props) => {
             name='edit_avatar'
             onClose={onClose}
             isOpen={isOpen}
-            buttonDisabled={!!error.length}
             onSubmit={handleSubmit}
+            buttonDisabled={!isValid || (values.avatar === user?.avatar)}
+            setErrors={setErrors}
         >
             <fieldset className='form__set'>
-                <label className='form__field'>
-                    <input
-                        className={`form__input${error ? ' form__input_type_error' : ''}`}
-                        name='avatar'
-                        type='url'
-                        required={true}
-                        ref={inputRef}
-                    />
-                    <span className={`form__placeholder${fixed ? ' form__placeholder_is-fixed' : ''}`}>
-                        Ссылка на аватар:
-                    </span>
-                    <span
-                        className={`form__input-error ${
-                            inputRef.current && inputRef.current.validity.valid ? 'form__input-error_active' : ''
-                        }`}
-                    >
-                        {inputRef.current && inputRef.current.validationMessage}
-                    </span>
-                </label>
+                <Input
+                    title='Имя:'
+                    name='avatar'
+                    type='url'
+                    required={true}
+                    onChange={handleChange}
+                    error={errors.avatar}
+                    value={values.avatar}
+                />
             </fieldset>
         </PopupWithForm>
     );

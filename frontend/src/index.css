@@ -61,3 +61,4 @@
 @import url(blocks/form/__submit/_loading/form__submit_loading.css);
 @import url(blocks/form/__submit/_loading-ok/form__submit_loading-ok.css);
 @import url(blocks/form/__tip/form__tip.css);
+@import url(blocks/form/__error/form__error.css);

@@ -8,12 +8,13 @@ import {Router} from '../../router';
 import * as auth from '../../utils/auth';
 import {InfoTooltip} from '../../components/InfoTooltip';
 import {useFormAndValidation} from '../../hooks/useFormAndValidation';
+import {ApiError} from "../../models/ApiError";
 
 const Register: FunctionComponent = () => {
     const [errorMessage, setErrorMessage] = useState<string>('');
     const [showSuccessPopup, setShowSuccessPopup] = useState(false);
     const [showErrorPopup, setShowErrorPopup] = useState(false);
-    const {values, handleChange, errors, isValid, resetForm} = useFormAndValidation();
+    const {values, handleChange, errors, setErrors, isValid, resetForm} = useFormAndValidation();
 
     const initialValues = useMemo(() => {
         return {email: '', password: ''};
@@ -31,16 +32,16 @@ const Register: FunctionComponent = () => {
         return auth
             .register(values.email, values.password)
             .then((data) => {
-                if (data.data) {
+                if (data) {
                     setShowSuccessPopup(true);
                 } else {
-                    throw data;
+                    return Promise.reject(data);
                 }
             })
-            .catch((err) => {
-                console.log(err);
-                setErrorMessage(err.toString());
+            .catch((err: ApiError) => {
+                setErrorMessage(err.body.message ?? err.toString());
                 setShowErrorPopup(true);
+                return Promise.reject(err);
             });
     };
 
@@ -64,6 +65,7 @@ const Register: FunctionComponent = () => {
                 onSubmit={handleSubmit}
                 buttonDisabled={!isValid}
                 buttonLabel='Зарегистрироваться'
+                setErrors={setErrors}
             >
                 <fieldset className='form__set'>
                     <Input
@@ -95,8 +97,8 @@ const Register: FunctionComponent = () => {
                     Войти
                 </Link>
             </p>
-            <InfoTooltip type='success' isOpen={showSuccessPopup} onClose={handleClosePopups} />
-            <InfoTooltip type='error' isOpen={showErrorPopup} onClose={handleClosePopups} message={errorMessage} />
+            <InfoTooltip type='success' isOpen={showSuccessPopup} onClose={handleClosePopups}/>
+            <InfoTooltip type='error' isOpen={showErrorPopup} onClose={handleClosePopups} message={errorMessage}/>
         </>
     );
 };

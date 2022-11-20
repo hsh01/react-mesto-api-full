@@ -31,7 +31,7 @@ export const Popup: FunctionComponent<Props> = ({isOpen, name, onClose, children
     };
 
     return (
-        <div className={`popup ${isOpen ? 'popup_opened' : ''} popup_type_${name}`} onClick={handleOverlay}>
+        <div className={`popup ${isOpen ? 'popup_opened' : ''} popup_type_${name}`} onMouseDown={handleOverlay}>
             <Tag className={`popup__container popup__container_${name}`}>
                 {children}
                 <button className='popup__close' type='button' title='закрыть' aria-label='закрыть' onClick={onClose} />

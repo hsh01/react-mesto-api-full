@@ -1,5 +1,8 @@
 import {CardModel} from '../models/CardModel';
 import {REACT_APP_API_BASE_PATH} from "../config";
+import {ApiError} from "../models/ApiError";
+import {json_or_error} from "./helpers";
+
 
 class Api {
     private _baseUrl: string;
@@ -16,12 +19,8 @@ class Api {
             headers: {...options?.headers, ...this._headers},
             credentials: 'include'
         };
-        return fetch(`${this._baseUrl}/${path}`, options).then((res) => {
-            if (res.ok) {
-                return res.json();
-            }
-            return Promise.reject(res.status);
-        });
+        return fetch(`${this._baseUrl}/${path}`, options)
+            .then(json_or_error);
     }
 
     getUserInfo() {

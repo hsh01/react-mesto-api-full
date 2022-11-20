@@ -18,40 +18,33 @@ export const AuthContext = React.createContext<AuthContextInterface>(null!);
 
 export const AuthProvider = ({children}: { children: React.ReactNode }) => {
     const navigate = useNavigate();
-    const [loggedIn, setLoggedIn] = useState(false);
     const [user, setUser] = useLocalStorage("user", undefined);
 
-
     function checkAuth() {
-        if (loggedIn) {
-            api.getUserInfo()
-                .then((res) => {
-                    if (res) {
-                        setUser(res);
-                        navigate(Router.HOME, {replace: true});
-                    }
-                })
-                .catch((err) => {
-                    if (err.status === 401) {
-                        logout();
-                    }
-                });
-        }
+        api.getUserInfo()
+            .then((res) => {
+                if (res) {
+                    setUser(res);
+                    navigate(Router.HOME, {replace: true});
+                }
+            })
+            .catch((err) => {
+                if (err.status === 401) {
+                    logout();
+                }
+            });
     }
 
     useEffect(() => {
         checkAuth();
-    }, [loggedIn]);
+    }, []);
 
     const login = (user: { email: string, password: string }) => {
         return auth.authorize(user.email, user.password)
             .then((res) => {
-                if (res.ok) {
-                    setLoggedIn(true);
-                    checkAuth();
-                    navigate(Router.HOME, {replace: true});
-                }
-            })
+                checkAuth();
+                navigate(Router.HOME, {replace: true});
+            });
     };
 
     const logout = () => {

@@ -11,7 +11,7 @@ type Props = {
 };
 
 export const AddPlacePopup = ({isOpen, onClose, onCardAdd}: Props) => {
-    const {values, handleChange, errors, isValid, resetForm} = useFormAndValidation();
+    const {values, handleChange, errors, setErrors, isValid, resetForm} = useFormAndValidation();
 
     const initialValues = useMemo(() => {
         return {name: '', link: ''};
@@ -19,10 +19,10 @@ export const AddPlacePopup = ({isOpen, onClose, onCardAdd}: Props) => {
 
     useEffect(() => {
         resetForm(initialValues);
-    }, [resetForm, initialValues]);
+    }, [resetForm, initialValues, isOpen]);
 
     const handleSubmit = () => {
-        return onCardAdd(values).then(() => resetForm(initialValues));
+        return onCardAdd(values);
     };
 
     return (
@@ -34,6 +34,7 @@ export const AddPlacePopup = ({isOpen, onClose, onCardAdd}: Props) => {
             isOpen={isOpen}
             onSubmit={handleSubmit}
             buttonDisabled={!isValid}
+            setErrors={setErrors}
         >
             <fieldset className='form__set'>
                 <Input

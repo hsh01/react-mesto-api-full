@@ -2,9 +2,9 @@ const router = require('express').Router();
 const NotFoundError = require('../errors/not-found-error');
 const auth = require('../middlewares/auth');
 
-const authRouter = require('./auth');
-const userRouter = require('./users');
-const cardRouter = require('./cards');
+const authRouter = require('../auth/routes');
+const userRouter = require('../users/routes');
+const cardRouter = require('../cards/routes');
 
 router.get('/crash-test', () => {
   setTimeout(() => {

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {useEffect, useState} from 'react';
 import {Popup} from '../Popup';
+import {ApiError} from "../../models/ApiError";
 
 type Props = {
     title: string;
@@ -14,18 +15,20 @@ type Props = {
     submitting?: boolean;
     submitted?: boolean;
     submitError?: string;
+    setErrors?: (data: any) => void;
 };
 
 export const PopupWithForm = ({
-    title,
-    name,
-    children,
-    onClose,
-    onSubmit,
-    buttonDisabled = true,
-    isOpen = false,
-    buttonLabel = 'Сохранить'
-}: Props) => {
+                                  title,
+                                  name,
+                                  children,
+                                  onClose,
+                                  onSubmit,
+                                  buttonDisabled = true,
+                                  isOpen = false,
+                                  setErrors,
+                                  buttonLabel = 'Сохранить'
+                              }: Props) => {
     const [submitting, setSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [submitError, setSubmitError] = useState('');
@@ -40,9 +43,7 @@ export const PopupWithForm = ({
         e.preventDefault();
 
         setSubmitting(true);
-        new Promise((resolve) => {
-            resolve(onSubmit(e));
-        })
+        onSubmit(e)
             .then(() => {
                 setSubmitted(true);
             })
@@ -51,9 +52,16 @@ export const PopupWithForm = ({
                     onClose();
                 }, 1000);
             })
-            .catch((error: any) => {
-                console.log(error);
-                setSubmitError(error.toString());
+            .catch((err: ApiError) => {
+                setSubmitError(err.body ? err.body.message : err.toString());
+                if (setErrors && err.body.validation) {
+                    setErrors({
+                        ...err.body.validation.body.keys.reduce((accum: Object, key: string) => ({
+                            [key]: err.body.validation.body.message
+                        }), {})
+                    })
+                }
+                return Promise.reject(err);
             })
             .finally(() => setSubmitting(false));
     }
@@ -65,12 +73,13 @@ export const PopupWithForm = ({
                 {children}
                 <button
                     className={`form__submit${buttonDisabled === true ? ' form__submit_disabled' : ''}${
-                        submitting ? ' form__submit_loading' : ''
-                    }${submitted ? ' form__submit_loading-ok' : ''}`}
+                        submitting ? ' form__submit_disabled form__submit_loading' : ''
+                    }${submitted ? ' form__submit_disabled form__submit_loading-ok' : ''}`}
                     type='submit'
                 >
-                    {submitError ? submitError : submitted ? '' : buttonLabel}
+                    {buttonLabel}
                 </button>
+                <span className='form__error'>{submitError ? submitError : ''}</span>
             </form>
         </Popup>
     );

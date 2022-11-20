@@ -1,12 +1,5 @@
 const { Joi } = require('celebrate');
 
-const UserAuthSchema = {
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
-  }),
-};
-
 const UserCreateSchema = {
   body: Joi.object().keys({
     email: Joi.string().required().email(),
@@ -38,5 +31,5 @@ const UserIdParamSchema = {
 };
 
 module.exports = {
-  UserAuthSchema, UserProfileSchema, UserAvatarSchema, UserCreateSchema, UserIdParamSchema,
+  UserProfileSchema, UserAvatarSchema, UserCreateSchema, UserIdParamSchema,
 };

@@ -4,16 +4,17 @@ import {PopupWithForm} from '../PopupWithForm';
 import {Input} from '../Input';
 import {useFormAndValidation} from '../../hooks/useFormAndValidation';
 import {useAuth} from "../../contexts/AuthContext";
+import {ApiError} from "../../models/ApiError";
 
 type Props = {
     isOpen: boolean;
     onClose: () => void;
-    onUpdateUser: (user: { name: string; about: string }) => void;
+    onUpdateUser: (user: { name: string; about: string }) => Promise<any>;
 };
 
 export const EditProfilePopup = ({isOpen, onClose, onUpdateUser}: Props) => {
     const {user} = useAuth();
-    const {values, handleChange, errors, isValid, resetForm} = useFormAndValidation();
+    const {values, handleChange, errors, setErrors, isValid, resetForm} = useFormAndValidation();
 
     const handleSubmit = () => {
         return onUpdateUser(values);
@@ -34,7 +35,7 @@ export const EditProfilePopup = ({isOpen, onClose, onUpdateUser}: Props) => {
             isOpen={isOpen}
             onSubmit={handleSubmit}
             buttonDisabled={!isValid || (values.name === user?.name && values.about === user?.about)}
-        >
+            setErrors={setErrors}>
             <fieldset className='form__set'>
                 <Input
                     title='Имя:'

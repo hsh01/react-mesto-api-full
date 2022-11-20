@@ -3,8 +3,12 @@ const { celebrate } = require('celebrate');
 
 const {
   getUser, getUsers, setProfile, setAvatar, getMe,
-} = require('../controllers/users');
-const { UserProfileSchema, UserAvatarSchema, UserIdParamSchema } = require('../schemas/user');
+} = require('./services');
+const {
+  UserProfileSchema,
+  UserAvatarSchema,
+  UserIdParamSchema,
+} = require('./schemas');
 
 router.get('/', getUsers);
 router.get('/me', getMe);
