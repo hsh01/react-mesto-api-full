@@ -33,7 +33,7 @@ export const AddPlacePopup = ({isOpen, onClose, onCardAdd}: Props) => {
             onClose={onClose}
             isOpen={isOpen}
             onSubmit={handleSubmit}
-            buttonDisabled={!isValid}
+            buttonDisabled={!(isValid && values.name && values.link)}
             setErrors={setErrors}
         >
             <fieldset className='form__set'>
